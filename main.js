@@ -139,6 +139,7 @@ stopBtn.addEventListener("click", () => {
 });
 
 
+// Commented out: loading, playing, pausing, stopping audio file contained in project repo
 // // create media element source of audio const
 // const source = audioContext.createMediaElementSource(audio);
 
