@@ -1,0 +1,62 @@
+body{
+    height: 100vh;
+    background-color: #404040;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Button Styling */
+.button-container{
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+    gap:10px;
+}
+
+/* Play button styling */
+.play-button{
+    background-color: #717171;
+    color: white;
+    padding: 8px 12px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: none; 
+    outline: none;
+}
+
+.play-button:hover{
+    background-color: #535353;
+    outline: none;
+}
+
+/* Pause Button Styling */
+.pause-button{
+    background-color: #717171;
+    color: white;
+    padding: 8px 12px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: none; 
+    outline: none;
+}
+
+.pause-button:hover{
+    background-color: #535353;
+    outline: none;
+}
+
+/* Waveform Styling */
+canvas {
+    background-color: black;
+    border-radius: 8px;
+    border: 1px solid white;
+}
