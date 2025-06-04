@@ -16,6 +16,7 @@
         <button class="play-button">Play</button>
         <button class="pause-button">Pause</button>
         <button class="stop-button">Stop</button>
+        <button class="transcribe-button">Transcribe</button>
     </div>
 
     <p class="timer">Not recording</p>
@@ -23,5 +24,9 @@
     <script src="./main.js"></script>
     <canvas width="300" height="100"></canvas>
 
+    <div id="output">
+        <div id="audio-container"></div>
+        <textarea id="transcription-box" rows="5" cols="50" placeholder="Transcription will appear here..."></textarea>
+    </div>
 </body>
 </html>
