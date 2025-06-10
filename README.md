@@ -3,16 +3,22 @@
 pip freeze > requirements.txt (to add packages to requirements)
 
 ## To run and test whisper locally
-In one terminal run the command to start Whisper backend API: \\
-uvicorn dictation.app:app --reload \\
-(running on http://localhost:8000) \\
+In one terminal run the command to start Whisper backend API: 
 
-Open another terminal and run to start frontend server: \\
-python3 -m http:server 5500 \\
+uvicorn dictation.app:app --reload 
+
+(running on http://localhost:8000) 
+
+
+Open another terminal and run to start frontend server: 
+
+python3 -m http:server 5500 
+
 Visit http://localhost:5500 to test!
 
 
-Frontend is served on localhost:5500 \\
+Frontend is served on localhost:5500 
+
 Backend is served on localhost:8000
 
 ## Whisper
