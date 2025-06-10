@@ -4,18 +4,18 @@ pip freeze > requirements.txt (to add packages to requirements)
 
 ## To run web app locally:
 
-1. **Clone project:**
+1. **Clone project:**  
     'git clone <repo_url>'
 
-2. **Install dependencies:**
+2. **Install dependencies:**  
     'pip install -r requirements.txt'
 
 3. **Start server:**
     * In one terminal, start Whisper on backend API:  
-        'uvicorn dictation.app:app --reload'  
-        (This will run on http://localhost:8000) 
+            'uvicorn dictation.app:app --reload'  
+            (This will run on http://localhost:8000) 
     * Open another terminal, start frontend server from projects root:  
-        'python3 -m http:server 5500'  
+            'python3 -m http:server 5500'  
     * Visit http://localhost:5500 to test!
 
 **Note:**  
