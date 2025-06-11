@@ -4,13 +4,18 @@
 from fastapi import FastAPI, File, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from dictation.transcriber import transcribe
+from pydantic import BaseModel
 #from math import process_math
 import tempfile
 import shutil
 import os
+import requests
 
 
 app = FastAPI()
+
+class TextInput(BaseModel):
+    text: str
 
 # allow requests from the frontend (localhost:5500 is where frontend is served)
 app.add_middleware(
@@ -31,3 +36,20 @@ async def transcribe_audio(file: UploadFile = File(...)):
     text = transcribe(temp_file_path)
 
     return {"transcription": text}
+
+# clean transcribed audio
+@app.post("/clean")
+async def clean_transcribe(payload: TextInput):
+    prompt = f"Fix this sentence and make it sounds smarter: {payload.text}"
+
+    response = requests.post("http://localhost:11434/api/generate", json={
+        "model": "mistral",
+        "prompt": prompt,
+        "stream": False
+    })
+    
+    result = response.json()
+    return {"cleaned": result.get("response", "No response from model.")}
+
+    
+

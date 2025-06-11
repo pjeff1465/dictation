@@ -4,6 +4,7 @@ const playBtn = document.querySelector(".play-button");
 const pauseBtn = document.querySelector(".pause-button");
 const stopBtn = document.querySelector(".stop-button");
 const transcribeBtn = document.querySelector(".transcribe-button");
+const cleanBtn = document.querySelector(".clean-button");
 
 let mediaRecorder;
 let chunks = [];
@@ -182,99 +183,25 @@ transcribeBtn.addEventListener("click", async () => {
     }
 });
 
-// // handles sending audio to backend to be transcribed
-// async function handleStopAndTranscribe() {
-//     const blob = new Blob(chunks, { type: "audio/webm; codecs=opus" });
-//     const audioURL = URL.createObjectURL(blob);
+// Clean up transcribed text
+cleanBtn.addEventListener("click", async () => {
+    const rawText = document.querySelector("#transcription-box").value;
 
-//     const audioElement = new Audio(audioURL);
-//     audioElement.controls = true;
-//     document.body.appendChild(audioElement);
+    try {
+        const clean_response = await fetch("http://localhost:8000/clean", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ text: rawText })
+        });
 
-//     const formData = new FormData();
-//     formData.append("file", blob, "recording.webm");
+        const data = await clean_response.json();
+        console.log("Model response:", data);
 
-//     try {
-//         const response = await fetch("http://localhost:8000/transcribe", {
-//             method: "POST",
-//             body: formData
-//         });
-//         const data = await response.json();
-//         document.querySelector("#transcription-box").value = data.transcription;
-//     } catch (err) {
-//         console.error("Transcription error:", err);
-//     }
-
-//     chunks = [];
-//     if (stream) stream.getTracks().forEach(track => track.stop());
-//     stopTimer();
-// }
-// // can add if statement to clear audio when pressed stopped or limit to one
-// stopBtn.addEventListener("click", () => {
-//     if (mediaRecorder && mediaRecorder.state !== "inactive") {
-//         mediaRecorder.stop();
-//         console.log("Recording stopped");
-//         stopTimer();
-//     }
-// });
-
-
-
-// mediaRecorder = async () => {
-//     const blob = new Blob(chunks, { type: "audio/ogg"});
-//     const audioURL = URL.createObjectURL(blob);
-
-//     const audioElement = new Audio(audioURL);
-//     audioElement.controls = true;
-//     document.body.appendChild(audioElement);
-
-//     // send recorded audio to backend
-//     const formData = new FormData();
-//     formData.append("file", blob, "recording.webm");
-
-//     try {
-//         const response = await fetch("http://localhost:8000/transcribe", {
-//             method: "POST",
-//             body: formData
-//         });
-
-//         const data = await response.json();
-//         // Display transcribed text
-//         document.querySelector("#transcription-box").value = data.transcription;
-//     } catch (err) {
-//         console.error("Transcription error:", err);
-//     }
-
-//     // cleanup
-//     chunks = [];
-//     stream.getTracks().forEach(track => track.stop());
-//     stopTimer();
-// };
-
-
-// Commented out: loading, playing, pausing, stopping audio file contained in project repo
-// // create media element source of audio const
-// const source = audioContext.createMediaElementSource(audio);
-
-// // create destination (speakers) for source
-// source.connect(audioContext.destination);
-
-// // Verify enough data has been loaded to play the media up to its end w/o stopping and buffering
-// audio.addEventListener("canplaythrough", () => {
-//     playBtn.addEventListener("click", () => {
-//         if (audioContext.state === "suspended"){
-//             audioContext.resume();
-//         }
-//         audio.play();
-//     });
-// });
-
-// pauseBtn.addEventListener("click", () => {
-//     audio.pause();
-// });
-// stopBtn.addEventListener("click", () => {
-//     audio.pause();
-//     audio.currentTime = 0;
-// });
-
-
+        document.querySelector("#clean-box").value = data.cleaned;
+        
+    } catch (err) {
+        console.error("Clean-up error:", err);
+    }
+}); 
