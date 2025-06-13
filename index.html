@@ -16,19 +16,52 @@
         <button class="play-button">Play</button>
         <button class="pause-button">Pause</button>
         <button class="stop-button">Stop</button>
-        <button class="transcribe-button">Transcribe</button>
-        <button class="clean-button">Clean Up</button>
+        <button id="transcribe-button" class="transcribe-button">Transcribe</button>
     </div>
 
     <p class="timer">Not recording</p>
 
-    <script src="./main.js"></script>
     <canvas width="300" height="100"></canvas>
+
+    <div id="transcribe-loading" class="loading" style="display: none;">
+        Transcribing in progress...
+        <div class="spinner"></div>
+    </div>
 
     <div id="output">
         <div id="audio-container"></div>
         <textarea id="transcription-box" rows="5" cols="50" placeholder="Transcription will appear here..."></textarea>
-        <textarea id="clean-box" rows="5" cols="50" placeholder="Clean up text will appear here..."></textarea>
     </div>
+
+    <textarea readonly name="prompt-description" rows="9" cols="70">
+    Choose a prompt to help clean up your text!
+    Here are some examples
+    hint: the more descriptive you are the better your response will be
+
+        'Fix my text and make it sound smarter'
+        'Expand on my text by adding a couple sentences'
+        'Make my text sound more professional'
+        'Fix my text so I can use it in a technical paper'
+        'Make this formal'
+    </textarea>
+    <div id="prompt-input">
+        <div id="prompt-container">
+            <textarea id="prompt-box" rows="2" cols="50" placeholder="Type your prompt..."></textarea>
+        </div>
+    </div>
+    <div class="cleanup-btn-container">
+        <button id="clean-button" class="clean-button">Clean Up</button>
+    </div>
+
+    <div id="clean-loading" class="loading" style="display: none;">
+        Cleaning in progress...
+        <div class="spinner"></div>
+    </div>
+
+    <div id="cleanup-output">
+        <div id="cleanup-container"></div>
+        <textarea id="clean-box" rows="5" cols="50" placeholder="Cleaned up text will appear here..."></textarea>
+    </div>
+    <script src="./main.js"></script>
 </body>
 </html>

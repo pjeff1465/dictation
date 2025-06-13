@@ -147,6 +147,12 @@ stopBtn.addEventListener("click", () => {
 
 // Transcribe Button
 transcribeBtn.addEventListener("click", async () => {
+    const loadingIndicator = document.getElementById("transcribe-loading");
+
+    // loading bar
+    loadingIndicator.style.display = "block";
+    transcribeBtn.disabled = true;
+
     if (!chunks.length) {
         console.warn("No audio to transcribe!");
         return;
@@ -180,28 +186,62 @@ transcribeBtn.addEventListener("click", async () => {
         document.querySelector("#transcription-box").value = data.transcription;
     } catch (err) {
         console.error("Transcription error:", err);
+    } finally {
+        // stop loading bar
+        loadingIndicator.style.display = "none";
+        transcribeBtn.disabled = false;
     }
 });
 
-// Clean up transcribed text
-cleanBtn.addEventListener("click", async () => {
-    const rawText = document.querySelector("#transcription-box").value;
+// Accept prompt input
+cleanBtn.addEventListener("click", async function () {
+    console.log("Clean button clicked!")
+    const prompt = document.getElementById("prompt-box").value;
+    const text = document.getElementById("transcription-box").value;
+    const loadingIndicator = document.getElementById("clean-loading");
+
+    // loading bar
+    loadingIndicator.style.display = "block";
+    cleanBtn.disabled = true;
 
     try {
-        const clean_response = await fetch("http://localhost:8000/clean", {
+        const response = await fetch("http://localhost:8000/clean", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({ text: rawText })
+            body: JSON.stringify({ user_input: prompt, text: text })
         });
 
-        const data = await clean_response.json();
-        console.log("Model response:", data);
-
-        document.querySelector("#clean-box").value = data.cleaned;
-        
+        const result = await response.json();
+        document.getElementById("clean-box").value = result.cleaned;
     } catch (err) {
-        console.error("Clean-up error:", err);
+        console.error("Error:", err);
+    } finally {
+        loadingIndicator.style.display = "none";
+        cleanBtn.disabled = false;
     }
-}); 
+});
+
+// // Clean up transcribed text
+// cleanBtn.addEventListener("click", async () => {
+//     const rawText = document.querySelector("#transcription-box").value;
+
+//     try {
+//         const clean_response = await fetch("http://localhost:8000/clean", {
+//             method: "POST",
+//             headers: {
+//                 "Content-Type": "application/json"
+//             },
+//             body: JSON.stringify({ text: rawText })
+//         });
+
+//         const data = await clean_response.json();
+//         console.log("Model response:", data);
+
+//         document.querySelector("#clean-box").value = data.cleaned;
+        
+//     } catch (err) {
+//         console.error("Clean-up error:", err);
+//     }
+// }); 

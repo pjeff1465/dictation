@@ -15,7 +15,8 @@ import requests
 app = FastAPI()
 
 class TextInput(BaseModel):
-    text: str
+    user_input: str # Custom user prompt for ai
+    text: str # cleaned-up text result
 
 # allow requests from the frontend (localhost:5500 is where frontend is served)
 app.add_middleware(
@@ -37,10 +38,10 @@ async def transcribe_audio(file: UploadFile = File(...)):
 
     return {"transcription": text}
 
-# clean transcribed audio
+# clean transcribed audio using user prompt
 @app.post("/clean")
 async def clean_transcribe(payload: TextInput):
-    prompt = f"Fix this sentence and make it sounds smarter: {payload.text}"
+    prompt = f"{payload.user_input}: {payload.text}"
 
     response = requests.post("http://localhost:11434/api/generate", json={
         "model": "mistral",
