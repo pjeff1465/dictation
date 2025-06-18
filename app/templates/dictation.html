@@ -3,17 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../css/styles.css">
-    <title>Audio Element</title>
+    <link rel="stylesheet" href="/static/css/styles.css?v=1">
 </head>
 <body>
-    <!-- audio type supports any type that browser supports -->
-    <!-- <audio controls> 
-        <source src="./audio/sample.mp3" type="audio/mpeg">
-        <p>File type not supported!</p>
-    </audio> -->
+    <div class="nav-bar">
+        <nav>
+            <a href="/">Home</a>
+            <a href="/dictation">Dictation</a>
+        </nav>
+    </div>
+    
     <div class="button-container">
-        <button class="play-button">Play</button>
+        <button class="play-button">Record</button>
         <button class="pause-button">Pause</button>
         <button class="stop-button">Stop</button>
         <button id="transcribe-button" class="transcribe-button">Transcribe</button>
@@ -23,9 +24,12 @@
 
     <canvas width="300" height="100"></canvas>
 
-    <div id="transcribe-loading" class="loading" style="display: none;">
-        Transcribing in progress...
-        <div class="spinner"></div>
+    <!-- Progress Bar -->
+    <div id="myProgressBar-transcribe" style="display: none;" >
+        <p>Transcribing in progress...</p>
+        <div class="progress-container">
+            <div class="bar"></div>
+        </div>
     </div>
 
     <div id="output">
@@ -33,7 +37,7 @@
         <textarea id="transcription-box" rows="5" cols="50" placeholder="Transcription will appear here..."></textarea>
     </div>
 
-    <textarea readonly name="prompt-description" rows="9" cols="70">
+    <textarea readonly name="prompt-description" rows="11" cols="70">
     Choose a prompt to help clean up your text!
     Here are some examples
     hint: the more descriptive you are the better your response will be
@@ -58,10 +62,22 @@
         <div class="spinner"></div>
     </div>
 
+    <div id="myProgressBar-clean" style="display: none;" >
+        <p>Cleaning in progress...</p>
+        <div class="progress-container">
+            <div class="bar"></div>
+        </div>
+    </div>
+
     <div id="cleanup-output">
         <div id="cleanup-container"></div>
         <textarea id="clean-box" rows="5" cols="50" placeholder="Cleaned up text will appear here..."></textarea>
     </div>
-    <script src="./main.js"></script>
+
+    <nav>
+        <a href="/">Home</a>
+        <a href="/dictation">Dictation</a>
+    </nav>
+    
+    <script src="/static/js/main.js"></script>
 </body>
-</html>

@@ -1,4 +1,6 @@
+/* -------------------- Homepage styling -------------------- */
 body{
+    font-family: 'Fira Code', 'Consolas', 'Courier New', monospace;
     height: 100vh;
     background-color: #404040;
     color: #fff;
@@ -8,7 +10,46 @@ body{
     align-items: center;
 }
 
-/* Button Styling */
+h1 {
+    margin-bottom: 0;
+}
+
+.subtitle h2 {
+    font-size: 18px;
+    text-align: center;
+    margin-top: 2px;
+}
+
+.description-container p {
+    padding: 10px;
+    width: fit-content;
+    text-align: center;
+}
+/* ------------------- Nav bar styling -------------------------- */
+.nav-bar {
+    position: sticky;
+    top: 0;
+    width: 100%;
+    background-color: #a42f89;
+    padding: 1em;
+    text-align: center;
+    z-index: 1000;
+}
+.nav-bar a {
+    color: white;
+    margin-right: 1em;
+    text-decoration: none;
+}
+.nav-bar a:hover {
+    text-decoration: underline;
+}
+
+.content {
+    height: 2000px;
+    padding: 2em;
+}
+
+/* ------------------- Button Styling ------------------------------- */
 .button-container{
     margin-top: 30px;
     display: flex;
@@ -140,3 +181,35 @@ canvas {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
+
+/* Progress Bar */
+.progress-container {
+    width: 100%;
+    background-color: #e0e0e0;
+    border-radius: 10px;
+    height: 20px;
+    margin-top: 10px;
+}
+.bar {
+    width: 0%; 
+    height: 20px;
+    background-color: #a559bd;
+    border-radius: 10px;
+    transition: width 0.2s ease;
+}
+
+/* -------------------- Media changes with different screens ---------------------------- */
+/* Responsive layout - when the screen is less than 700px wide, make the two columns stack on top of each other instead of next to each other */
+@media screen and (max-width: 700px) {
+    .row {
+      flex-direction: column;
+    }
+  }
+  
+  /* Responsive layout - when the screen is less than 400px wide, make the navigation links stack on top of each other instead of next to each other */
+  @media screen and (max-width: 400px) {
+    .navbar a {
+      float: none;
+      width: 100%;
+    }
+  }

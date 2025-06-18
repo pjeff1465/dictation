@@ -2,7 +2,7 @@
 
 import whisper
 from fastapi import UploadFile
-from dictation.audio_utils import convert_to_wav
+from app.services.audio_utils import convert_to_wav
 
 model = whisper.load_model("medium")
 

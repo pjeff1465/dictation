@@ -147,11 +147,24 @@ stopBtn.addEventListener("click", () => {
 
 // Transcribe Button
 transcribeBtn.addEventListener("click", async () => {
-    const loadingIndicator = document.getElementById("transcribe-loading");
+    const progressBarContainer = document.getElementById("myProgressBar-transcribe");
+    const progressBar = progressBarContainer.querySelector(".bar");
 
-    // loading bar
-    loadingIndicator.style.display = "block";
+    let width = 0;
+
+    // progress bar
+    progressBarContainer.style.display = "block";
     transcribeBtn.disabled = true;
+
+    const interval = setInterval(() => {
+        if (width >= 100) {
+            clearInterval(interval);
+            transcribeBtn.disabled = false;
+        } else {
+            width++;
+            progressBar.style.width = width + "%";
+        }
+    }, 80); // update every 50ms 
 
     if (!chunks.length) {
         console.warn("No audio to transcribe!");
@@ -187,8 +200,10 @@ transcribeBtn.addEventListener("click", async () => {
     } catch (err) {
         console.error("Transcription error:", err);
     } finally {
-        // stop loading bar
-        loadingIndicator.style.display = "none";
+        // stop progress bar
+        clearInterval(interval);
+        progressBar.style.width = "100%";
+        progressBarContainer.style.display = "none";
         transcribeBtn.disabled = false;
     }
 });
@@ -198,11 +213,23 @@ cleanBtn.addEventListener("click", async function () {
     console.log("Clean button clicked!")
     const prompt = document.getElementById("prompt-box").value;
     const text = document.getElementById("transcription-box").value;
-    const loadingIndicator = document.getElementById("clean-loading");
 
-    // loading bar
-    loadingIndicator.style.display = "block";
-    cleanBtn.disabled = true;
+    const progressBarContainer = document.getElementById("myProgressBar-clean")
+    const progressBar = progressBarContainer.querySelector(".bar");
+
+    progressBarContainer.style.display = "block";
+    transcribeBtn.disabled = true;
+
+    // progress bar
+    const interval = setInterval(() => {
+        if (width >= 100) {
+            clearInterval(interval);
+            transcribeBtn.disabled = false;
+        } else {
+            width++;
+            progressBar.style.width = width + "%";
+        }
+    }, 80); // update every 80ms 
 
     try {
         const response = await fetch("http://localhost:8000/clean", {
@@ -218,30 +245,8 @@ cleanBtn.addEventListener("click", async function () {
     } catch (err) {
         console.error("Error:", err);
     } finally {
-        loadingIndicator.style.display = "none";
         cleanBtn.disabled = false;
+        progressBar.style.width = "100%";
+        progressBarContainer.style.display = "none";
     }
 });
-
-// // Clean up transcribed text
-// cleanBtn.addEventListener("click", async () => {
-//     const rawText = document.querySelector("#transcription-box").value;
-
-//     try {
-//         const clean_response = await fetch("http://localhost:8000/clean", {
-//             method: "POST",
-//             headers: {
-//                 "Content-Type": "application/json"
-//             },
-//             body: JSON.stringify({ text: rawText })
-//         });
-
-//         const data = await clean_response.json();
-//         console.log("Model response:", data);
-
-//         document.querySelector("#clean-box").value = data.cleaned;
-        
-//     } catch (err) {
-//         console.error("Clean-up error:", err);
-//     }
-// }); 

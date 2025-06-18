@@ -11,12 +11,15 @@ pip freeze > requirements.txt (to add packages to requirements)
     'pip install -r requirements.txt'
 
 3. **Start server:**
-    * In one terminal, start Whisper on backend API:  
-            'uvicorn dictation.app:app --reload'  
-            (This will run on http://localhost:8000) 
-    * Open another terminal, start frontend server from projects root:  
+    * In one terminal start ollama REST API:
+        'ollama serve'
+    * In another terminal, start backend API (FastAPI + Whisper):  
+            'uvicorn app.main:app --reload'  
+            (This will run backend + frontend on http://localhost:8000)
+    * Visit 'http://localhost:8000' to test web app! 
+    * **Optional:** To view frontend files seperately run: 
             'python3 -m http.server 5500'  
-    * Visit http://localhost:5500 to test!
+        * Then visit http://localhost:5500 
 
 **Note:**  
 Frontend is served on localhost:5500  
@@ -42,3 +45,7 @@ Responses generated at: 'http://localhost:11434/api/generate'
 Mistral, developed by Mistral AI team, is the specific LLM we chose to use for text cleanup. It is an advanced model designed for natural language tasks. 
     **Download Mistral**
         'ollama pull mistral'
+
+##### kill Ollama
+Find Process: lsof -i :11434
+Kill Process: kill [PID]
