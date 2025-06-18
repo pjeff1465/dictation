@@ -5,6 +5,7 @@ const pauseBtn = document.querySelector(".pause-button");
 const stopBtn = document.querySelector(".stop-button");
 const transcribeBtn = document.querySelector(".transcribe-button");
 const cleanBtn = document.querySelector(".clean-button");
+const submitBtn = document.querySelector(".submit-button");
 
 let mediaRecorder;
 let chunks = [];
@@ -208,7 +209,50 @@ transcribeBtn.addEventListener("click", async () => {
     }
 });
 
-// Accept prompt input
+// ai input with dropboxes
+document.getElementById("ai_prompt").addEventListener("submit", async function (e) {
+    e.preventDefault();
+    const formData = new FormData(this);
+
+    const progressBarContainer = document.getElementById("myProgressBar-clean")
+    const progressBar = progressBarContainer.querySelector(".bar");
+
+    progressBarContainer.style.display = "block";
+    transcribeBtn.disabled = true;
+    
+    console.log(formData);
+
+    let width = 0
+
+    // progress bar
+    const interval = setInterval(() => {
+        if (width >= 100) {
+            clearInterval(interval);
+            transcribeBtn.disabled = false;
+        } else {
+            width++;
+            progressBar.style.width = width + "%";
+        }
+    }, 100); // update every 100ms 
+
+    try {
+        const response = await fetch("/dictation", {
+            method: "POST",
+            body: formData
+        });
+
+        const result = await response.json();
+        document.getElementById("clean-box").value = result.cleaned;
+    } catch (err) {
+        console.error("Error:", err);
+    } finally {
+        submitBtn.disabled = false;
+        progressBar.style.width = "100%";
+        progressBarContainer.style.display = "none";
+    }
+});
+
+// ai input with customized prompt
 cleanBtn.addEventListener("click", async function () {
     console.log("Clean button clicked!")
     const prompt = document.getElementById("prompt-box").value;
@@ -220,6 +264,8 @@ cleanBtn.addEventListener("click", async function () {
     progressBarContainer.style.display = "block";
     transcribeBtn.disabled = true;
 
+    let width = 0
+
     // progress bar
     const interval = setInterval(() => {
         if (width >= 100) {
@@ -229,7 +275,7 @@ cleanBtn.addEventListener("click", async function () {
             width++;
             progressBar.style.width = width + "%";
         }
-    }, 80); // update every 80ms 
+    }, 100); // update every 80ms 
 
     try {
         const response = await fetch("http://localhost:8000/clean", {
@@ -250,3 +296,14 @@ cleanBtn.addEventListener("click", async function () {
         progressBarContainer.style.display = "none";
     }
 });
+
+// JavaScipt to download pdf
+window.downloadPDF = function () {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    const text = document.getElementById('transcription-box').value;
+    doc.text(text, 10, 10);
+
+    doc.save("transcription.pdf");
+}

@@ -3,14 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/static/css/styles.css?v=1">
+    <link rel="stylesheet" href="/static/css/styles.css?v=5">
     <title>writeEZ</title>
 </head>
+
 <body>
     <div class="nav-bar">
         <nav>
             <a href="/">Home</a>
             <a href="/dictation">Dictation</a>
+            <a href="/Clean-Up">Clean-Up</a>
         </nav>
     </div>
     <!-- audio type supports any type that browser supports -->
@@ -18,29 +20,37 @@
         <source src="./audio/sample.mp3" type="audio/mpeg">
         <p>File type not supported!</p>
     </audio> -->
-    <h1>
-        writeEZ
-    </h1>
-    <div class="subtitle">
-        <h2>
-            Have a hard time writing? Write EZ now!
-        </h2>
+    <div class="content">
+        <div class="title">
+            <h1>
+                writeEZ
+            </h1>
+        </div>
+        
+        <div class="subtitle">
+            <h2>
+                Have a hard time writing? Write EZ now!
+            </h2>
+        </div>
+
+        <div class="description-container">
+            <p>
+                To get started: <br>
+                Simply record yourself talking to create a text transcription by using the dictation option. <br>
+                <br>
+                Don't like what you said? <br>
+                Edit the text manually or allow AI to do it for you by using the 'clean up' option below!  
+            </p>
+        </div>
     </div>
 
-    <div class="description-container">
-        <p>
-            To get started: <br>
-            Simply record yourself talking to create a text transcription by using the dictation option. <br>
-            <br>
-            Don't like what you said? <br>
-            Edit the text manually or allow AI to do it for you by using the 'clean up' option below!  
-        </p>
+    <div class="bottom-nav">
+        <nav>
+            <a href="/">Home</a>
+            <a href="/dictation">Dictation</a>
+            <a href="/Clean-Up">Clean-Up</a>
+        </nav>
     </div>
-
-    <nav>
-        <a href="/">Home</a>
-        <a href="/dictation">Dictation</a>
-    </nav>
 
     <script src="/static/js/main.js"></script>
 </body>

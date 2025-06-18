@@ -1,10 +1,13 @@
 # FastAPI app with endpoints
 # Backend python with FastAPI (runs on server)
 
-from fastapi import FastAPI, File, UploadFile, APIRouter
+from fastapi import FastAPI, File, UploadFile, APIRouter, Form
 #from fastapi.middleware.cors import CORSMiddleware
 from app.services.whisper import transcribe
 from pydantic import BaseModel
+from fastapi.responses import StreamingResponse
+from fpdf import FPDF
+from io import BytesIO
 #from math import process_math
 import tempfile
 import shutil
@@ -39,7 +42,22 @@ async def transcribe_audio(file: UploadFile = File(...)):
 
     return {"transcription": text}
 
-# clean transcribed audio using user prompt
+# clean text using given prompt
+@router.post("/dictation")
+async def dictation(person: str = Form(...), reason: str = Form(...)):
+    prompt = f"Can you help edit and perfect my writing? Keep my original thoughts the same do not add a ton of information I just want it to be revised and my grammar to be improved. I am writing this for my {person} and it will be used for {reason}"
+    
+    response = requests.post("http://localhost:11434/api/generate", json={
+        "model": "mistral",
+        "prompt": prompt,
+        "stream": False
+    })
+
+    result = response.json()
+    return {"cleaned": result.get("response", "No response from model.")}
+    # return {"person": person, "reason": reason}
+
+# clean transcribed audio using user customized prompt
 @router.post("/clean")
 async def clean_transcribe(payload: TextInput):
     prompt = f"{payload.user_input}: {payload.text}"
@@ -53,5 +71,22 @@ async def clean_transcribe(payload: TextInput):
     result = response.json()
     return {"cleaned": result.get("response", "No response from model.")}
 
-    
+@router.post("/download")
+async def download_pdf(transcription_text: str = Form(...)):
+    pdf = FPDF()
+    pdf.add_page()
+    pdf.set_font("Arial", size=12)
+    pdf.multi_cell(0, 10, transcription_text)
+
+    pdf_output = BytesIO()
+    pdf.output(pdf_output)
+    pdf_output.seek(0)
+
+    return StreamingResponse(
+        pdf_output, 
+        media_type="application/pdf", 
+        headers={"Content-Disposition": "attachment; filename=transcription.pdf"}
+    )
+
+
 

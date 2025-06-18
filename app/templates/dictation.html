@@ -3,81 +3,126 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/static/css/styles.css?v=1">
+    <link rel="stylesheet" href="/static/css/styles.css?v=5">
 </head>
 <body>
     <div class="nav-bar">
         <nav>
             <a href="/">Home</a>
             <a href="/dictation">Dictation</a>
+            <a href="/Clean-Up">Clean-Up</a>
         </nav>
     </div>
+
+    <div class="dictation-title">
+        <h2>Record your audio!</h2>
+        <p>Hit the transcribe button to turn your audio to text.</p>
+    </div>
     
-    <div class="button-container">
-        <button class="play-button">Record</button>
-        <button class="pause-button">Pause</button>
-        <button class="stop-button">Stop</button>
-        <button id="transcribe-button" class="transcribe-button">Transcribe</button>
-    </div>
-
-    <p class="timer">Not recording</p>
-
-    <canvas width="300" height="100"></canvas>
-
-    <!-- Progress Bar -->
-    <div id="myProgressBar-transcribe" style="display: none;" >
-        <p>Transcribing in progress...</p>
-        <div class="progress-container">
-            <div class="bar"></div>
+    <div class="dictation-content">
+        <div class="button-container">
+            <button class="play-button">Record</button>
+            <button class="pause-button">Pause</button>
+            <button class="stop-button">Stop</button>
+            <button id="transcribe-button" class="transcribe-button">Transcribe</button>
         </div>
-    </div>
 
-    <div id="output">
-        <div id="audio-container"></div>
-        <textarea id="transcription-box" rows="5" cols="50" placeholder="Transcription will appear here..."></textarea>
-    </div>
+        <p class="timer">Not recording</p>
 
-    <textarea readonly name="prompt-description" rows="11" cols="70">
-    Choose a prompt to help clean up your text!
-    Here are some examples
-    hint: the more descriptive you are the better your response will be
+        <canvas width="300" height="100"></canvas>
 
-        'Fix my text and make it sound smarter'
-        'Expand on my text by adding a couple sentences'
-        'Make my text sound more professional'
-        'Fix my text so I can use it in a technical paper'
-        'Make this formal'
-    </textarea>
-    <div id="prompt-input">
-        <div id="prompt-container">
-            <textarea id="prompt-box" rows="2" cols="50" placeholder="Type your prompt..."></textarea>
+        <!-- Progress Bar -->
+        <div id="myProgressBar-transcribe" style="display: none;" >
+            <p>Transcribing in progress...</p>
+            <div class="progress-container">
+                <div class="bar"></div>
+            </div>
         </div>
-    </div>
-    <div class="cleanup-btn-container">
-        <button id="clean-button" class="clean-button">Clean Up</button>
-    </div>
 
-    <div id="clean-loading" class="loading" style="display: none;">
-        Cleaning in progress...
-        <div class="spinner"></div>
-    </div>
+        <form action="/download-pdf" method="post" target="_blank">
+            <div id="output">
+                <div id="audio-container"></div>
+                <textarea id="transcription-box" name="transcription-text" rows="5" cols="50" placeholder="Transcription will appear here..."></textarea>
+                <br>
+                <div class="pdf-button">
+                    <button type="submit">Download PDF</button>
+                </div>
+            </div>
+        </form>
 
-    <div id="myProgressBar-clean" style="display: none;" >
-        <p>Cleaning in progress...</p>
-        <div class="progress-container">
-            <div class="bar"></div>
+        <p>Edit your text manually by typing in the transciption box or have AI edit it for you.</p>
+
+        <div class="clean-title">
+            <h2>Clean-Up your text!</h2>
+            <p>In order to create the perfect text for you let the AI know what you are using this for and what your goal is.</p>
         </div>
+
+        <form id="ai_prompt" method="post">
+            <label for="person">I am writing this for my</label>
+            <select name="person" id="person">
+                <option value="professor">Professor</option>
+                <option value="boss">Boss</option>
+                <option value="colleague">Colleague</option>
+            </select>
+
+            <label for="reason">and it will be used for</label>
+            <select name="reason" id="reason">
+                <optgroup label="paper">
+                    <option value="technical">technical paper</option>
+                    <option value="english paper">english paper</option>
+                </optgroup>
+                <option value="email">email</option>
+            </select>
+            <br><br>
+            <!-- <input type="submit" value="Submit"> -->
+             <button type="submit" class="submit-button">Submit</button>
+        </form>
+
+        <textarea readonly name="prompt-description" rows="11" cols="70">
+        Choose a prompt to help clean up your text!
+        Here are some examples
+        hint: the more descriptive you are the better your response will be
+
+            'Fix my text and make it sound smarter'
+            'Expand on my text by adding a couple sentences'
+            'Make my text sound more professional'
+            'Fix my text so I can use it in a technical paper'
+            'Make this formal'
+        </textarea>
+        <div id="prompt-input">
+            <div id="prompt-container">
+                <textarea id="prompt-box" rows="2" cols="50" placeholder="Type your prompt..."></textarea>
+            </div>
+        </div>
+        <div class="cleanup-btn-container">
+            <button id="clean-button" class="clean-button">Clean Up</button>
+        </div>
+
+        <div id="clean-loading" class="loading" style="display: none;">
+            Cleaning in progress...
+            <div class="spinner"></div>
+        </div>
+
+        <div id="myProgressBar-clean" style="display: none;" >
+            <p>Cleaning in progress...</p>
+            <div class="progress-container">
+                <div class="bar"></div>
+            </div>
+        </div>
+
+        <div id="cleanup-output">
+            <div id="cleanup-container"></div>
+            <textarea id="clean-box" rows="5" cols="50" placeholder="Cleaned up text will appear here..."></textarea>
+        </div>
+    </div>  
+
+    <div class="bottom-nav">
+        <nav>
+            <a href="/">Home</a>
+            <a href="/dictation">Dictation</a>
+            <a href="/Clean-Up">Clean-Up</a>
+        </nav>
     </div>
 
-    <div id="cleanup-output">
-        <div id="cleanup-container"></div>
-        <textarea id="clean-box" rows="5" cols="50" placeholder="Cleaned up text will appear here..."></textarea>
-    </div>
-
-    <nav>
-        <a href="/">Home</a>
-        <a href="/dictation">Dictation</a>
-    </nav>
-    
     <script src="/static/js/main.js"></script>
 </body>
