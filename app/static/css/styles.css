@@ -18,6 +18,19 @@ body{
 }
 
 /* -------------------- Homepage styling -------------------- */
+.logo-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.logo {
+    max-width: 60%;
+    height: auto;
+    margin-right: 5%;
+    display: block;
+}
+
 .title {
     text-align: center;
     margin-top: 2em;
