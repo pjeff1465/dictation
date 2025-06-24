@@ -22,13 +22,19 @@ body{
     display: flex;
     justify-content: center;
     align-items: center;
+    margin: 0 auto;
 }
 
 .logo {
-    max-width: 60%;
+    max-width: 40%;
     height: auto;
-    margin-right: 5%;
+    margin-left: 5%;
     display: block;
+}
+
+.content {
+    margin-top: -50px;
+    margin-bottom: 100px;
 }
 
 .title {
@@ -50,6 +56,8 @@ body{
     padding: 10px;
     width: fit-content;
     text-align: center;
+    margin: 0 auto;
+    margin-top: 10px;
 }
 /* ------------------- Nav bar styling -------------------------- */
 
@@ -72,18 +80,20 @@ body{
     text-decoration: underline;
 }
 
-.content {
-    height: 2000px;
-    padding: 2em;
-}
-
 /* Bottom nav bar */
 .botton-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
     justify-content: center;
-    text-align: center;
+    align-items: center;
+    padding: 10px 0;
 }
 .bottom-nav a {
     color: black;
+    font-weight: bold;
 }
 .nav-bar a:hover {
     text-decoration: overline;
@@ -103,7 +113,7 @@ body{
     text-align: center;
 }
 
-/* Button Styling */
+/*  ----------- Button Styling --------------- */
 .button-container{
     margin-top: 30px;
     margin-bottom: 15px;
@@ -116,10 +126,10 @@ body{
 .play-button{
     background-color: #717171;
     color: white;
-    padding: 8px 12px;
-    font-size: 1rem;
+    padding: 14px 18px;
+    font-size: 3rem;
     border: none;
-    border-radius: 20px;
+    border-radius: 40px;
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.2s ease;
     box-shadow: none; 
@@ -135,10 +145,10 @@ body{
 .pause-button{
     background-color: #717171;
     color: white;
-    padding: 8px 12px;
-    font-size: 1rem;
+    padding: 14px 18px;
+    font-size: 3rem;
     border: none;
-    border-radius: 20px;
+    border-radius: 40px;
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.2s ease;
     box-shadow: none; 
@@ -154,10 +164,10 @@ body{
 .stop-button{
     background-color: #717171;
     color: white;
-    padding: 8px 12px;
-    font-size: 1rem;
+    padding: 14px 18px;
+    font-size: 3rem;
     border: none;
-    border-radius: 20px;
+    border-radius: 40px;
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.2s ease;
     box-shadow: none; 
@@ -173,10 +183,10 @@ body{
 .transcribe-button{
     background-color: #717171;
     color: white;
-    padding: 8px 12px;
-    font-size: 1rem;
+    padding: 14px 18px;
+    font-size: 3rem;
     border: none;
-    border-radius: 20px;
+    border-radius: 40px;
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.2s ease;
     box-shadow: none; 
@@ -192,10 +202,10 @@ body{
 .clean-button{
     background-color: #717171;
     color: white;
-    padding: 8px 12px;
-    font-size: 1rem;
+    padding: 14px 18px;
+    font-size: 3rem;
     border: none;
-    border-radius: 20px;
+    border-radius: 40px;
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.2s ease;
     box-shadow: none; 

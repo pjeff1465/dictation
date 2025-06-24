@@ -7,11 +7,87 @@ const transcribeBtn = document.querySelector(".transcribe-button");
 const cleanBtn = document.querySelector(".clean-button");
 const submitBtn = document.querySelector(".submit-button");
 
+// Sounds
+const recordingStart = new Audio('/static/sounds/recording_start.mp3')
+const recordingStop = new Audio('/static/sounds/recording_stop.mp3')
+const clickSound = new Audio('static/sounds/click.wav')
+
 let mediaRecorder;
 let chunks = [];
 let stream;
 let startTime, timerInterval;
 let analyser, dataArray;
+let isRecording = false;
+
+// ---------------------------------- voice commands ------------------------------------
+// Logic for speak pause recording
+const speechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+// const recognition = new SpeechRecognition();
+// recognition.interimResults = true;
+let recognition
+
+// start voice recongnition when window is open
+window.addEventListener("DOMContentLoaded", () => {
+    if (recognition) {
+        try {
+            recognition.start();
+            console.log("Voice recognition started.");
+        } catch (err) {
+            console.warn("Speech recognition failed to start:", err);
+        }
+    }
+});
+
+if (speechRecognition) {
+    recognition = new speechRecognition();
+    recognition.continuous = true;
+    recognition.interimResults = true;
+
+    recognition.onresult = function(event) {
+        const transcript = Array.from(event.results)
+            .map(result => result[0].transcript)
+            .join("")
+            .toLowerCase();
+    
+        console.log("Heard:", transcript);
+
+        if(transcript.includes("begin recording")) {
+            if (mediaRecorder.state === "paused") {
+                mediaRecorder.resume();
+                speak("Resuming recording.");
+            } else if (mediaRecorder.state === "inactive" || !mediaRecorder) {
+                mediaRecorder.start()
+                speak("Starting recording.");
+            }
+        }
+        if(transcript.includes("pause recording")) {
+            if(mediaRecorder.state === "recording") {
+                mediaRecorder.pause()
+                speak("Recording Paused.");
+            }
+        }
+        if(transcript.includes("resume recording")) {
+            if(mediaRecorder.state === "paused") {
+                mediaRecorder.resume()
+                speak("Resume recording.")
+            }
+        }
+        if(transcript.includes("stop recording")) {
+            if (mediaRecorder.state === "recording" || mediaRecorder.state === "paused") {
+                mediaRecorder.stop();
+                speak("Recording stopped.");
+                recognition.stop();
+            }
+        }
+    };
+
+}
+
+// speech function
+function speak(text) {
+    const utterance = new SpeechSynthesisUtterance(text);
+    window.speechSynthesis.speak(utterance);
+}
 
 // audio timer
 function startTimer() {
@@ -75,8 +151,24 @@ function setupVisualizer(stream){
     draw();
 }
 
-// Play Button 
+// ----------------------------------- Play Button ------------------------------------ 
+// play noise on button focus
+playBtn.addEventListener("mouseenter", () => {
+
+    if (!isRecording) {
+        speak(playBtn.getAttribute("aria-label") || playBtn.innerText);
+    //speak(textToSpeak);
+    }
+
+    //speak("Click to Record Audio");
+});
+
 playBtn.addEventListener("click", async () => {
+
+    // play noise on button click
+    recordingStart.play();
+    // start listening for voice commands
+
     if(!navigator.mediaDevices) {
         alert("Media devices not supported in this browser! Plug in external mic.")
         return;
@@ -119,10 +211,25 @@ playBtn.addEventListener("click", async () => {
     } catch (err) {
         console.error("Microphone access denied or error:", err);
     }
+    if (!isRecording) {
+        isRecording = true;
+    } else {
+        isRecording = false;
+    }
 });
 
-// Pause/ Resume Microphone
+// --------------------- Pause/ Resume Microphone ---------------------------
+
+pauseBtn.addEventListener("mouseenter", () => {
+    if(isRecording) {
+        speak(button.getAttribute("aria-label") || button.innerText);
+    }
+});
+
 pauseBtn.addEventListener("click", () => {
+
+    clickSound.play()
+
     if (mediaRecorder) {
         if (mediaRecorder.state === "recording") {
             mediaRecorder.pause();
@@ -136,8 +243,22 @@ pauseBtn.addEventListener("click", () => {
     }
 });
 
-// Stop Button
+// --------------------------- Stop Button -------------------------------------
+
+stopBtn.addEventListener("mouseenter", () => {
+    if(isRecording) {
+        speak(button.getAttribute("aria-label") || button.innerText);
+    }
+});
+
 stopBtn.addEventListener("click", () => {
+
+    recordingStop.play()
+
+    if(isRecording) {
+        isRecording = false;
+    }
+
     if (mediaRecorder && mediaRecorder.state !== "inactive") {
             mediaRecorder.stop();
 
@@ -307,3 +428,5 @@ window.downloadPDF = function () {
 
     doc.save("transcription.pdf");
 }
+
+

@@ -49,3 +49,5 @@ Mistral, developed by Mistral AI team, is the specific LLM we chose to use for t
 ##### kill Ollama
 Find Process: lsof -i :11434
 Kill Process: kill [PID]
+
+#### Sounds from zapsplat

@@ -13,6 +13,7 @@ import tempfile
 import shutil
 import os
 import requests
+import re
 
 
 #app = FastAPI()
@@ -40,7 +41,10 @@ async def transcribe_audio(file: UploadFile = File(...)):
 
     text = transcribe(temp_file_path)
 
-    return {"transcription": text}
+    # use regex to remove voice commands from audio clip
+    cleaned_text = re.sub(r"\b(stop recording|pause recording|begin recording|resume recording)[.,!?]?\s*", "", text, flags=re.IGNORECASE).strip()
+
+    return {"transcription": cleaned_text}
 
 # clean text using given prompt
 @router.post("/dictation")
