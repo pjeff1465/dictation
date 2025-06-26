@@ -1,5 +1,6 @@
 // FrontEnd JavaScript (runs in browser)
 
+// Event Buttons
 const playBtn = document.querySelector(".play-button");
 const pauseBtn = document.querySelector(".pause-button");
 const stopBtn = document.querySelector(".stop-button");
@@ -7,89 +8,65 @@ const transcribeBtn = document.querySelector(".transcribe-button");
 const cleanBtn = document.querySelector(".clean-button");
 const submitBtn = document.querySelector(".submit-button");
 
+// 
+const speechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
 // Sounds
 const recordingStart = new Audio('/static/sounds/recording_start.mp3')
 const recordingStop = new Audio('/static/sounds/recording_stop.mp3')
-const clickSound = new Audio('static/sounds/click.wav')
+const clickSound = new Audio('/static/sounds/click.wav')
+const waitingSound = new Audio('/static/sounds/waiting_music.wav')
 
+// Variables
 let mediaRecorder;
 let chunks = [];
 let stream;
 let startTime, timerInterval;
 let analyser, dataArray;
 let isRecording = false;
+let helpOpen = false;
+let cancelHelp = false;
+let recognition = null;
 
-// ---------------------------------- voice commands ------------------------------------
-// Logic for speak pause recording
-const speechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-// const recognition = new SpeechRecognition();
-// recognition.interimResults = true;
-let recognition
+// #############################################################################################
+// ##                              FUNCTIONS                                                  ##
+// #############################################################################################
 
-// start voice recongnition when window is open
-window.addEventListener("DOMContentLoaded", () => {
-    if (recognition) {
-        try {
-            recognition.start();
-            console.log("Voice recognition started.");
-        } catch (err) {
-            console.warn("Speech recognition failed to start:", err);
-        }
-    }
-});
-
-if (speechRecognition) {
-    recognition = new speechRecognition();
-    recognition.continuous = true;
-    recognition.interimResults = true;
-
-    recognition.onresult = function(event) {
-        const transcript = Array.from(event.results)
-            .map(result => result[0].transcript)
-            .join("")
-            .toLowerCase();
-    
-        console.log("Heard:", transcript);
-
-        if(transcript.includes("begin recording")) {
-            if (mediaRecorder.state === "paused") {
-                mediaRecorder.resume();
-                speak("Resuming recording.");
-            } else if (mediaRecorder.state === "inactive" || !mediaRecorder) {
-                mediaRecorder.start()
-                speak("Starting recording.");
-            }
-        }
-        if(transcript.includes("pause recording")) {
-            if(mediaRecorder.state === "recording") {
-                mediaRecorder.pause()
-                speak("Recording Paused.");
-            }
-        }
-        if(transcript.includes("resume recording")) {
-            if(mediaRecorder.state === "paused") {
-                mediaRecorder.resume()
-                speak("Resume recording.")
-            }
-        }
-        if(transcript.includes("stop recording")) {
-            if (mediaRecorder.state === "recording" || mediaRecorder.state === "paused") {
-                mediaRecorder.stop();
-                speak("Recording stopped.");
-                recognition.stop();
-            }
-        }
-    };
-
+async function speakAsync(text) {
+    return new Promise((resolve) => {
+        speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.onend = resolve;
+        speechSynthesis.speak(utterance);
+    });
 }
 
-// speech function
-function speak(text) {
-    const utterance = new SpeechSynthesisUtterance(text);
-    window.speechSynthesis.speak(utterance);
+async function pauseRecognition(text) {
+    stopRecognition();
+    await speakAsync(text);
+    startRecognition();
 }
 
-// audio timer
+// -------------- HELP MENU ------------------
+
+async function speakHelpMenu() {
+    cancelHelp = false;
+    await speakAsync("You have opened the help menu!");
+    if (cancelHelp) return;
+    await speakAsync("If you want to leave anytime, press the space bar.");
+    if (cancelHelp) return;
+    await speakAsync("To writeEZ record your audio and let us transcribe it to text. Then, decide what you will use your transcription for. Whether its for a paper or simply an email, we will turn your writing into the perfect format for you!")
+    if (cancelHelp) return;
+    await speakAsync("To record an audio press the 'r' key");
+    if (cancelHelp) return;
+    await speakAsync("To pause or resume recording say, pause or resume recording. Or press the 'p' key.");
+    if (cancelHelp) return;
+    await speakAsync("To end recording say, stop recording, or press the 's' key");
+    if (cancelHelp) return;
+    await speakAsync("To transcribe your audio to text, press the 't' key.")
+}
+// ------------ Audio Visualizer Funcs -------------------
+// Timer func
 function startTimer() {
     startTime = Date.now();
     timerInterval = setInterval(() => {
@@ -151,39 +128,19 @@ function setupVisualizer(stream){
     draw();
 }
 
-// ----------------------------------- Play Button ------------------------------------ 
-// play noise on button focus
-playBtn.addEventListener("mouseenter", () => {
+// ------------ check input focus ------------------
+function isEditableElement(element) {
+    return element.tagName === "INPUT" || 
+    element.tagName === "TEXTAREA" || 
+    element.isContentEditable;
+}
 
-    if (!isRecording) {
-        speak(playBtn.getAttribute("aria-label") || playBtn.innerText);
-    //speak(textToSpeak);
-    }
-
-    //speak("Click to Record Audio");
-});
-
-playBtn.addEventListener("click", async () => {
-
-    // play noise on button click
-    recordingStart.play();
-    // start listening for voice commands
-
-    if(!navigator.mediaDevices) {
-        alert("Media devices not supported in this browser! Plug in external mic.")
-        return;
-    }
-
-    if (mediaRecorder && mediaRecorder.state === "paused") {
-        mediaRecorder.resume();
-        startTimer();
-        return;
-    }
-
+// ------------ Recording Funcs -------------------
+// start recording
+async function startRecording() {
     try {
-        stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        stream = await navigator.mediaDevices.getUserMedia({ audio: true })
         mediaRecorder = new MediaRecorder(stream);
-
         setupVisualizer(stream);
         chunks = [];
 
@@ -191,9 +148,29 @@ playBtn.addEventListener("click", async () => {
             chunks.push(event.data);
         };
 
+        mediaRecorder.onstop = stopRecording;
+
+        mediaRecorder.start();
+        startTimer();
+        console.log("Recording started");
+    } catch (err) {
+        console.error("Microphone access denied or error:", err);
+        alert("Unable to access microphone.");
+    }
+}
+// Stop Recording Func 
+function stopRecording() {
+
+    if (mediaRecorder && mediaRecorder.state !== "inactive") {
+        mediaRecorder.stop();
+        stream.getTracks().forEach(track => track.stop());
+        recordingStop.play();
+        console.log("Recording stopped");
+    
         mediaRecorder.onstop = () => {
             const blob = new Blob(chunks, { type: "audio/webm" });
             const audioURL = URL.createObjectURL(blob);
+
             const audioContainer = document.querySelector("#audio-container");
             audioContainer.innerHTML = "";
 
@@ -201,74 +178,55 @@ playBtn.addEventListener("click", async () => {
             audioElement.controls = true;
             audioContainer.appendChild(audioElement);
 
-            //stream.getTracks().forEach(track => track.stop());
             stopTimer();
-        };
-
-        mediaRecorder.start();
-        startTimer();
-        console.log("Recording started");
-    } catch (err) {
-        console.error("Microphone access denied or error:", err);
-    }
-    if (!isRecording) {
-        isRecording = true;
-    } else {
-        isRecording = false;
-    }
-});
-
-// --------------------- Pause/ Resume Microphone ---------------------------
-
-pauseBtn.addEventListener("mouseenter", () => {
-    if(isRecording) {
-        speak(button.getAttribute("aria-label") || button.innerText);
-    }
-});
-
-pauseBtn.addEventListener("click", () => {
-
-    clickSound.play()
-
-    if (mediaRecorder) {
-        if (mediaRecorder.state === "recording") {
-            mediaRecorder.pause();
-            stopTimer();
-            console.log("Recording paused")
-        } else if (mediaRecorder.state === "paused") {
-            mediaRecorder.resume();
-            startTimer();
-            console.log("Recording resumed");
         }
+    } else {
+        console.warn("MediaRecorder not active.")
     }
-});
+}
 
-// --------------------------- Stop Button -------------------------------------
+// 'r' press func
+async function handleRtoggle() {
+    recordingStart.play();
 
-stopBtn.addEventListener("mouseenter", () => {
-    if(isRecording) {
-        speak(button.getAttribute("aria-label") || button.innerText);
+    if (!navigator.mediaDevices) {
+        alert("Media devices not supported in this browser! Plug in external microphone.");
+        speak("Media devices not supported in this browser! Plug in external microphone.");
+        return;
     }
-});
-
-stopBtn.addEventListener("click", () => {
-
-    recordingStop.play()
-
-    if(isRecording) {
-        isRecording = false;
+    if (mediaRecorder && mediaRecorder.state === "paused") {
+        mediaRecorder.resume();
+        startTimer();
+        return;
     }
 
-    if (mediaRecorder && mediaRecorder.state !== "inactive") {
-            mediaRecorder.stop();
+    await startRecording();
+    isRecording = !isRecording;
+}
 
-            stream.getTracks().forEach(track => track.stop());
-            console.log("Recording stopped");
+// -------------- Pause/ Resume Func ------------
+function pauseRecording() {
+    if (!mediaRecorder) return;
+
+    clickSound.play();
+
+    if (mediaRecorder.state === "recording") {
+        mediaRecorder.pause();
+        stopTimer();
+        console.log("Recording paused")
+    } else if (mediaRecorder.state === "paused") {
+        mediaRecorder.resume();
+        startTimer();
+        console.log("Recording resumed")
     }
-});
+}
 
-// Transcribe Button
-transcribeBtn.addEventListener("click", async () => {
+// ------------ Transcribe Audio Func ----------------
+async function transcribeAudio() {
+    speak("Transcribing audio.....")
+
+    waitingSound.play();
+
     const progressBarContainer = document.getElementById("myProgressBar-transcribe");
     const progressBar = progressBarContainer.querySelector(".bar");
 
@@ -327,9 +285,227 @@ transcribeBtn.addEventListener("click", async () => {
         progressBar.style.width = "100%";
         progressBarContainer.style.display = "none";
         transcribeBtn.disabled = false;
+        waitingSound.pause();
+        waitingSound.currentTime = 0;
+        speak("Transcription Finished!")
+    }
+}
+
+// ---------------------------------- voice commands ------------------------------------
+// Logic for speak pause recording
+function initRecognition() {
+    if (!speechRecognition) {
+        console.warn("Speech Recognition API not supported.");
+        return;
+    }
+
+    recognition = new speechRecognition();
+    recognition.continuous = true;
+    recognition.interimResults = true;
+
+    recognition.onresult = handleSpeechResult;
+    recognition.onerror = (e) => console.error("Speech error:", e.error);
+    recognition.onend = () => console.log("Speech recognition ended.");
+}
+
+function startRecognition() {
+    if (!recognition) return;
+
+    try {
+        recognition.start();
+        console.log("Voice recognition started.");
+    } catch (err) {
+        console.warn("Could not start speech recognition:", err);
+    }
+}
+
+function stopRecognition() {
+    if (!recognition) return;
+
+    try {
+        recognition.stop();
+        console.log("Voice recognition stopped.");
+    } catch (err) {
+        console.warn("Could not stop speech recognition:", err);
+    }
+}
+
+async function handleSpeechResult(event) {
+    const transcript = Array.from(event.results)
+        .map(result => result[0].transcript)
+        .join("")
+        .toLowerCase();
+    
+    console.log("Heard:", transcript);
+    await processCommand(transcript);
+}
+
+async function processCommand(transcript) {
+    if (!mediaRecorder) {
+        console.warn("mediaRecorder not available.");
+        return;
+    }
+
+    if (transcript.includes("begin recording")) {
+        if (mediaRecorder.state === "paused") {
+            mediaRecorder.resume();
+            await pauseRecognition("Resuming recording.");
+        } else if (mediaRecorder.state === "inactive") {
+            mediaRecorder.start();
+            await pauseRecognition("Starting recording.");
+        }
+    }
+
+    if (transcript.includes("pause recording")) {
+        if (mediaRecorder.state === "recording") {
+            mediaRecorder.pause();
+            await pauseRecognition("Recording paused.");
+        }
+    }
+    
+    if (transcript.includes("resume recording")) {
+        if (mediaRecorder.state === "paused") {
+            mediaRecorder.resume();
+            await pauseRecognition("Resuming recording.")
+        }
+    }
+
+    if (transcript.includes("transcribe")) {
+        if (mediaRecorder.state === "inactive" && typeof mediaRecorder.transcribeBtn === "function") {
+            mediaRecorder.transcribeBtn();
+            await pauseRecognition("Transcribing audio....")
+        }
+    }
+}
+
+// start voice recongnition when window is open
+window.addEventListener("DOMContentLoaded", () => {
+    initRecognition();
+    startRecognition();
+    // if (recognition) {
+    //     try {
+    //         recognition.start();
+    //         console.log("Voice recognition started.");
+    //     } catch (err) {
+    //         console.warn("Speech recognition failed to start:", err);
+    //     }
+    // }
+});
+
+// if (speechRecognition) {
+//         let command = false
+        
+//         if(transcript.includes("begin recording")) {
+//             if (mediaRecorder.state === "paused") {
+//                 mediaRecorder.resume();
+//                 speak("Resuming recording.");
+//             } else if (mediaRecorder.state === "inactive" || !mediaRecorder) {
+//                 mediaRecorder.start()
+//                 speak("Starting recording.");
+//             }
+//         }
+//         if(transcript.includes("pause recording")) {
+//             if(mediaRecorder.state === "recording") {
+//                 mediaRecorder.pause()
+//                 speak("Recording Paused.");
+//             }
+//         }
+//         if(transcript.includes("resume recording")) {
+//             if(mediaRecorder.state === "paused") {
+//                 mediaRecorder.resume()
+//                 speak("Resume recording.")
+//             }
+//         }
+//         if(transcript.includes("stop recording")) {
+//             if (mediaRecorder.state === "recording" || mediaRecorder.state === "paused") {
+//                 mediaRecorder.stop();
+//                 speak("Recording stopped.");
+//                 recognition.stop();
+//             }
+//         }
+//         if(transcript.includes("transcribe")) {
+//             if (mediaRecorder.state === "inactive" || !mediaRecorder) {
+//                 mediaRecorder.transcribeBtn();
+//                 speak("Transcriping audio....");
+//                 recognition.stop();
+//             }
+//         }
+//     };
+
+// speech function
+function speak(text) {
+    if (recognition && recognition.stop) {
+        recognition.stop();
+    }
+    const utterance = new SpeechSynthesisUtterance(text);
+
+    utterance.onend = () => {
+        try {
+            recognition.start();
+        } catch (err) {
+            console.warn("Recognition resume failed:", err);
+        }
+    };
+
+    window.speechSynthesis.speak(utterance);
+}
+// #############################################################################################
+// ##                               EVENTS                                                    ##
+// #############################################################################################
+// ------------- Play Button ------------- 
+// button command
+playBtn.addEventListener("click", handleRtoggle);
+
+// keyboard command
+window.addEventListener("keydown", async function (event) {
+    const activeElem = document.activeElement;
+    if (isEditableElement(activeElem)) return;
+
+    if (event.key === "r" || event.key === "R") {
+        await handleRtoggle();
     }
 });
 
+// ------------------- Pause/ Resume recording -----------------------
+// button command
+pauseBtn.addEventListener("click", pauseRecording);
+
+// 'p' keyboard command
+window.addEventListener("keydown", async function (event) {
+    const activeElem = document.activeElement;
+    if (isEditableElement(activeElem)) return;
+
+    if (event.key === 'p' || event.key === 'P') {
+        pauseRecording();
+    }
+});
+
+// --------------------------- Stop Button -------------------------------------
+// button stop
+stopBtn.addEventListener("click", stopRecording);
+
+// keyboard stop
+window.addEventListener("keydown", async function (event) {
+    if (event.key === 's' || event.key === 'S') {
+        stopRecording();
+    }
+});
+
+// ----------------- Transcribe Event --------------------
+// button command
+transcribeBtn.addEventListener("click", transcribeAudio);
+
+// keyboard command
+window.addEventListener("keydown", async function (event) {
+    const activeElem = document.activeElement;
+    if (isEditableElement(activeElem)) return;
+
+    if (event.key === 't' || event.key === 'T'){
+        transcribeAudio();
+    }
+});
+
+// ----------------------- AI --------------------------
 // ai input with dropboxes
 document.getElementById("ai_prompt").addEventListener("submit", async function (e) {
     e.preventDefault();
@@ -428,5 +604,25 @@ window.downloadPDF = function () {
 
     doc.save("transcription.pdf");
 }
+
+// ------------ Help Menu Event ---------------------
+window.addEventListener("keydown", function (event) {
+
+    if (event.code === "Space" || event.key === " ") {
+        event.preventDefault();
+        if(helpOpen) {
+            speechSynthesis.cancel();
+            cancelHelp = true
+            speak("Exiting help menu...");
+            helpOpen = false;
+        } 
+        return;
+    }
+    if (event.key === "h" && !helpOpen) {
+        helpOpen = true
+        speakHelpMenu();
+    }
+
+});
 
 
