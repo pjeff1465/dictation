@@ -1,0 +1,10 @@
+{
+    "name": "Technical Paper",
+    "section": [
+        {"Header": ["Title", "Author(s)", "Department", "University"]}, 
+        "Abstract", 
+        "Introduction", 
+        "Body", 
+        "Conclusion"
+    ]
+}

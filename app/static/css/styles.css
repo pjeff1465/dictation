@@ -82,6 +82,7 @@ body{
 
 /* Bottom nav bar */
 .botton-nav {
+    margin-top: 30px;
     position: fixed;
     bottom: 0;
     left: 0;
@@ -113,7 +114,41 @@ body{
     text-align: center;
 }
 
+/* Audio container styling */
+#audio-container {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 /*  ----------- Button Styling --------------- */
+/* Upload Audio File */
+input[type="file"]::file-selector-button {
+    align-items: center;
+    justify-content: center;
+    background-color: #717171;
+    color: white;
+    padding: 10px 14px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 40px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: none; 
+    outline: none;
+}
+.upload-audio {
+    margin-top: 20px;
+    text-align: center;
+    justify-content: center;
+}
+.upload-audio p {
+    font-weight: bold;
+    font-size: large;
+    margin-bottom: 10px;
+}
+
 .button-container{
     margin-top: 30px;
     margin-bottom: 15px;
@@ -237,6 +272,12 @@ body{
 
 #transcription-box {
     margin-top: 20px;
+    width: 100%;
+    max-width: 800px;
+    height: 150px;
+    padding: 10px;
+    font-size: 16px;
+    box-sizing: border-box;
 }
 
 /* Waveform Styling */
@@ -289,6 +330,225 @@ canvas {
 .clean-title {
     margin-top: 30px;
     margin-bottom: 20px;
+}
+
+.clean-content {
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.prompt-description {
+    margin-top: 30px;
+    margin-bottom: 20px;
+}
+
+.prompt-description h2 {
+    color: white;
+    text-decoration: bold;
+    font-size: 20px;
+    margin-top: 30px;
+}
+
+.prompt-description p {
+    color: pink;
+    margin-top: 10px;
+    font-size: 16px;
+}
+
+/* ------------------------------ CREATE PAPER SECTION ------------------------------------- */
+.center-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* justify-content: center;  center horizontally */
+    padding: 20px;            /* optional padding */
+    gap: 20px;
+}
+
+.tab-tools {
+    display: flex;
+    align-items: center;    
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 20px;
+}
+
+.progress-container {
+    width: 100%;
+    max-width: 300px;
+    background-color: #e0e0e0;
+    border-radius: 4px;
+    overflow: hidden;
+    margin: 0 auto;
+}
+
+.download-paper {
+    background-color: #717171;
+    color: white;
+    padding: 10px 12px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 40px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: none; 
+    outline: none;
+}
+
+.tab-audio {
+    margin-top: 10px;
+}
+
+.format-selector {
+    margin-bottom: 20px;
+}
+
+/* Tabs container */
+.tab-buttons {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.tab-container .tab-content {
+    margin-bottom: 20px;
+}
+
+textarea {
+    width: 100%;
+    height: 150px;
+    margin-top: 8px;
+    resize: vertical;
+    font-size: 1rem;
+}
+
+/* Tab buttons */
+.tab-btn {
+    padding: 10px 20px;
+    background-color: #e0e0e0;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+    font-weight: bold;
+    transition: background-color 0.3s;
+    cursor: pointer;
+}
+
+.tab-btn:hover {
+    background-color: #f881e0;
+}
+
+.tab-btn.active {
+    background-color: #a42f89;
+    color: white;
+}
+
+/* Tab content (textarea areas) */
+.tab-content {
+    display: none;
+    transition: all 0.3s ease;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+.tab-content label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 4px;
+    margin-top: 12px;
+    text-align: center;
+}
+
+/* Optional: styling for textareas */
+.tab-content textarea {
+    width: 100%;
+    min-width: 400px;
+    height: 200px;
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    resize: vertical;
+}
+
+/* .section-box {
+    border: 1px solid #ccc;
+    padding: 16px;
+    margin-bottom: 20px;
+    background-color: #f9f9f9;
+    border-radius: 6px;
+    align-items: flex-start;
+} */
+
+.field-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;   /* centers label and input horizontally */
+    margin-bottom: 5px;   /* spacing between fields */
+}
+
+.section-box {
+    display: flex;
+    align-items: center; /* left-align */
+    margin-bottom: 20px;
+}
+
+.main-section-label {
+    display: block;
+    font-size: 2rem;
+    font-weight: bold;
+    margin-top: 20px;
+    margin-bottom: 5px;
+    color: white;
+    margin-left: 0px;
+} 
+
+.header-group-title {
+    color: white;      /* example: red */
+    font-weight: bold;
+    font-size: 2rem;
+    text-align: center;
+    /* any other styles you want */
+}
+
+.header-label {
+    color: rgb(173, 173, 173);
+    padding: 4px 8px;
+    font-weight: bold;
+    display: inline-block;
+    margin-bottom: 4px;
+    text-align: center;
+}
+
+.header-textarea {
+    display: inline-block;
+    width: 250px;          /* Adjust width as needed */
+    height: 30px;
+    font-size: 0.9rem;
+    padding: 5px 10px;
+    margin-bottom: 10px;
+    margin-right: 10px;
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    align-items: center;
+    justify-content: center;
+}
+
+#previewArea {
+    background: #f9f9f9;
+    border-radius: 5px;
+    line-height: 1.5em;
+    max-width: 800px;
+    margin: auto;
+}
+#previewArea h3 {
+    margin-top: 20px;
+    color: #333;
 }
 
 /* -------------------- Media changes with different screens ---------------------------- */

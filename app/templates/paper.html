@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link type="image/png" sizes="68x68" rel="icon" href="/static/favicon.png">
+    <link rel="stylesheet" href="/static/css/styles.css?v=16">
+    <title>Create Paper - writeEZ</title>
+</head>
+
+<body>
+    <div class="nav-bar">
+        <nav>
+            <a href="/">Home</a>
+            <a href="/dictation">Dictation</a>
+            <a href="/clean">Clean-Up</a>
+            <a href="/paper">Create Paper</a>
+        </nav>
+    </div>
+
+    <div class="dictation-title">
+        <h2>Create a paper!</h2>
+        <p>Either record sections of your paper, upload recordings, or type in designated text boxes.</p>
+    </div>
+
+    <!-- Start of content -->
+    <div class="center-wrapper">
+
+        <!-- Paper Format Selection -->
+        <!-- <div class="format-selector">
+            <label for="style">Choose a format style:</label>
+            <select name="style" id="styleSelect">
+                <option value="">-- Select Format --</option>
+                <option value="academic">Academic Paper</option>
+                <option value="report">Technical Report</option>
+                <option value="magazine">Magazine</option>
+            </select>
+        </div> -->
+
+        <!-- Upload/Record buttons for each sections -->
+        <div class="tab-tools">
+            <label>
+                Upload Audio
+                <input type="file" id="audioFile" accept="audio/*">
+                <div id="audio-container"></div>
+            </label>
+
+            <!-- Record Audio -->
+            <div class="button-container">
+                <button class="play-button" aria-label="Record Audio">Record</button>
+                <button class="pause-button">Pause</button>
+                <button class="stop-button">Stop</button>
+                <button id="transcribe-button" class="transcribe-button">Transcribe</button>
+            </div>
+            
+            <p class="timer">Not recording</p>
+        
+            <canvas width="300" height="100"></canvas>
+        
+            <!-- Progress Bar -->
+            <div id="myProgressBar-transcribe" style="display: none;" >
+                <p>Transcribing in progress...</p>
+                <div class="progress-container">
+                    <div class="bar"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dynamic tab interface -->
+        <div class="tab-buttons"></div>
+        <div class="tab-container"></div>
+
+        <!-- Form -->
+        <form id="pdfForm" action="/paper-format" method="post" target="_blank">
+            <input type="hidden" name="transcription_text" id="hiddenTextInput">
+        </form>
+
+        <button type="button" onclick="previewPaper()">Preview Paper</button>
+
+        <!-- Download Button -->
+        <div id="raw-output">
+            <button class="download-paper" onclick="downloadPaperPDF()">Download Paper</button>
+        </div>
+    
+
+    </div>
+
+    <div class="bottom-nav">
+        <nav>
+            <a href="/">Home</a>
+            <a href="/dictation">Dictation</a>
+            <a href="/clean">Clean-Up</a>
+            <a href="/paper">Create Paper</a>
+        </nav>
+    </div>
+
+    <script>
+        window.tabAudioData = {};
+    </script>
+    
+    <script src="/static/js/main.js?v=65"></script>
+    <script src="/static/js/paper.js?v=66"></script>
+</body>
+</html>

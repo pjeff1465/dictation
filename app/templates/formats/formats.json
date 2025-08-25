@@ -1,0 +1,36 @@
+[
+    {
+        "id": "academic",
+        "name": "Academic Paper",
+        "section": [
+            {"Header": ["Title", "Author(s)", "Professor"]}, 
+            "Introduction", 
+            "Body", 
+            "Conclusion"
+        ]
+    },
+
+    {
+        "id": "magazine",
+        "name": "Magazine Article",
+        "section": [
+            {"Header": ["Title", "Author(s)"]}, 
+            "Lead Paragraph", 
+            "Main Content"
+        ]
+    },
+
+    {
+        "id": "report",
+        "name": "Technical Paper",
+        "section": [
+            {"Header": ["Title", "Author(s)", "Department", "University", "Professor"]}, 
+            "Abstract", 
+            "Introduction", 
+            "Methods", 
+            "Results",
+            "Discussion",
+            "Appendix"
+        ]
+    }
+]

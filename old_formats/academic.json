@@ -1,0 +1,9 @@
+{
+    "name": "Academic Paper",
+    "section": [
+        {"Header": ["Title", "Author", "Professor"]}, 
+        "Introduction", 
+        "Body", 
+        "Conclusion"
+    ]
+}

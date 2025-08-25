@@ -3,61 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/static/css/styles.css?v=5">
+    <link rel="stylesheet" href="/static/css/styles.css?v=7">
 </head>
 <body>
     <div class="nav-bar">
         <nav>
             <a href="/">Home</a>
             <a href="/dictation">Dictation</a>
-            <a href="/Clean-Up">Clean-Up</a>
+            <a href="/clean">Clean-Up</a>
+            <a href="/paper">Create Paper</a>
         </nav>
     </div>
 
-    <textarea readonly name="prompt-description" rows="11" cols="70">
-        Choose a prompt to help clean up your text!
-        Here are some examples
-        hint: the more descriptive you are the better your response will be
+    <div class="clean-content">
+        <textarea readonly name="prompt-description" rows="11" cols="70">
+            Choose a prompt to help clean up your text!
+            Here are some examples
+            hint: the more descriptive you are the better your response will be
 
-            'Fix my text and make it sound smarter'
-            'Expand on my text by adding a couple sentences'
-            'Make my text sound more professional'
-            'Fix my text so I can use it in a technical paper'
-            'Make this formal'
-        </textarea>
-        <div id="prompt-input">
-            <div id="prompt-container">
-                <textarea id="prompt-box" rows="2" cols="50" placeholder="Type your prompt..."></textarea>
+                'Fix my text and make it sound smarter'
+                'Expand on my text by adding a couple sentences'
+                'Make my text sound more professional'
+                'Fix my text so I can use it in a technical paper'
+                'Make this formal'
+            </textarea>
+            <div id="prompt-input">
+                <div id="prompt-container">
+                    <textarea id="prompt-box" rows="2" cols="50" placeholder="Type your prompt..."></textarea>
+                </div>
             </div>
-        </div>
-        <div class="cleanup-btn-container">
-            <button id="clean-button" class="clean-button">Clean Up</button>
-        </div>
-
-        <div id="clean-loading" class="loading" style="display: none;">
-            Cleaning in progress...
-            <div class="spinner"></div>
-        </div>
-
-        <div id="myProgressBar-clean" style="display: none;" >
-            <p>Cleaning in progress...</p>
-            <div class="progress-container">
-                <div class="bar"></div>
+            <div class="cleanup-btn-container">
+                <button id="clean-button" class="clean-button">Clean Up</button>
             </div>
-        </div>
 
-        <div id="cleanup-output">
-            <div id="cleanup-container"></div>
-            <textarea id="clean-box" rows="5" cols="50" placeholder="Cleaned up text will appear here..."></textarea>
-        </div>
-    </div>  
+            <div id="clean-loading" class="loading" style="display: none;">
+                Cleaning in progress...
+                <div class="spinner"></div>
+            </div>
 
-    <div class="bottom-nav">
-        <nav>
-            <a href="/">Home</a>
-            <a href="/dictation">Dictation</a>
-            <a href="/Clean-Up">Clean-Up</a>
-        </nav>
+            <div id="myProgressBar-clean" style="display: none;" >
+                <p>Cleaning in progress...</p>
+                <div class="progress-container">
+                    <div class="bar"></div>
+                </div>
+            </div>
+
+            <div id="cleanup-output">
+                <div id="cleanup-container"></div>
+                <textarea id="clean-box" rows="5" cols="50" placeholder="Cleaned up text will appear here..."></textarea>
+            </div>
+        </div>  
+
+        <br>
+        <br>
+
+        <div class="bottom-nav">
+            <nav>
+                <a href="/">Home</a>
+                <a href="/dictation">Dictation</a>
+                <a href="/clean">Clean-Up</a>
+                <a href="/paper">Create Paper</a>
+            </nav>
+        </div>
     </div>
         
     <script src="/static/js/main.js"></script>

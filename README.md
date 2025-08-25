@@ -50,4 +50,14 @@ Mistral, developed by Mistral AI team, is the specific LLM we chose to use for t
 Find Process: lsof -i :11434
 Kill Process: kill [PID]
 
-#### Sounds from zapsplat
+#### Sounds from freesound.org
+
+### Download text into PDF
+Sending plain text to backend to locally convert to PDF via FPDF (python library)  
+PDF file is generated and saved locally on the server and streamed to client  
+
+## Customization
+FPDF allows for easy customization of the PDF on the backend to create pdfs that look like a academic paper, research artical, or formal document, etc.  
+Creating PDFs on the backend also allows us to easily add images or tables into the text. It also allows for the customization of font style and sizes.  
+
+FPDF allows you to add headers or footers unlike if you did it on the frontend.

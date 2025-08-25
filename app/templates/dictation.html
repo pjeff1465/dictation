@@ -3,22 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/static/css/styles.css?v=8">
+    <link rel="icon" href="/static/favicon.png" type="image/png">
+    <link rel="stylesheet" href="/static/css/styles.css?v=1">
+    <title>Dictation - writeEZ</title>
 </head>
 <body>
     <div class="nav-bar">
         <nav>
             <a href="/">Home</a>
             <a href="/dictation">Dictation</a>
-            <a href="/Clean-Up">Clean-Up</a>
+            <a href="/clean">Clean-Up</a>
+            <a href="/paper">Create Paper</a>
         </nav>
     </div>
 
     <div class="dictation-title">
         <h2>Record your audio!</h2>
-        <p>Hit the transcribe button to turn your audio to text.</p>
+        <p>Hit the transcribe button to turn your audio to text or upload audio file.</p>
     </div>
     
+    <div class="upload-audio">
+        <p>Upload Audio File</p>
+        <input type="file" id="audioFile" accept="audio/*">
+        <div id="audio-container"></div>
+    </div>
+
+    <form id="pdfForm" action="/download-pdf" method="post" target="_blank">
+        <input type="hidden" name="transcription_text" id="hiddenTextInput">
+    </form>
+
+    <form id="pdfForm" action="/paper-format" method="post" target="_blank">
+        <input type="hidden" name="transcription_text" id="hiddenTextInput">
+    </form>
+
     <div class="dictation-content">
         <div class="button-container">
             <button class="play-button" aria-label="Record Audio">Record</button>
@@ -38,17 +55,32 @@
                 <div class="bar"></div>
             </div>
         </div>
-
-        <form action="/download-pdf" method="post" target="_blank">
+<!-- 
+        <form action="/download" method="post" target="_blank">
             <div id="output">
                 <div id="audio-container"></div>
-                <textarea id="transcription-box" name="transcription-text" rows="5" cols="50" placeholder="Transcription will appear here..."></textarea>
+                <textarea id="transcription-box" name="transcription_text" rows="5" cols="50" placeholder="Transcription will appear here..."></textarea>
                 <br>
                 <div class="pdf-button">
                     <button type="submit">Download PDF</button>
                 </div>
             </div>
-        </form>
+        </form> -->
+        <div id="raw-output">
+            <textarea id="transcription-box" rows="5" cols="50" placeholder="Transcription will appear here..."></textarea>
+            <br>
+            <!-- <div class="pdf-button">
+                <button type="button" onclick="downloadPDF('transcription-box')">Download Raw PDF</button>
+            </div> -->
+            <button onclick="downloadPDF('transcription-box')">Download Raw PDF</button>
+        </div>
+
+        <div id="raw-output">
+            <!-- <div class="pdf-button">
+                <button type="button" onclick="downloadPDF('transcription-box')">Download Raw PDF</button>
+            </div> -->
+            <button onclick="downloadPaperPDF('transcription-box')">Download Paper PDF</button>
+        </div>
 
         <p>Edit your text manually by typing in the transciption box or have AI edit it for you.</p>
 
@@ -78,17 +110,21 @@
              <button type="submit" class="submit-button">Submit</button>
         </form>
 
-        <textarea readonly name="prompt-description" rows="11" cols="70">
-        Choose a prompt to help clean up your text!
-        Here are some examples
-        hint: the more descriptive you are the better your response will be
-
-            'Fix my text and make it sound smarter'
-            'Expand on my text by adding a couple sentences'
-            'Make my text sound more professional'
-            'Fix my text so I can use it in a technical paper'
-            'Make this formal'
-        </textarea>
+        <!-- <textarea readonly name="prompt-description" rows="11" cols="70"> -->
+        <div class="prompt-description">
+            <p> 
+                <h2> Choose a prompt to help clean up your text! </h2>
+                Here are some examples <br>
+                hint: the more descriptive you are the better your response will be <br>
+                <br>
+                    'Fix my text and make it sound smarter' <br>
+                    'Expand on my text by adding a couple sentences' <br>
+                    'Make my text sound more professional' <br>
+                    'Fix my text so I can use it in a technical paper' <br>
+                    'Make this formal'
+            </p>
+        </div>
+        <!-- </textarea> -->
         <div id="prompt-input">
             <div id="prompt-container">
                 <textarea id="prompt-box" rows="2" cols="50" placeholder="Type your prompt..."></textarea>
@@ -110,19 +146,39 @@
             </div>
         </div>
 
+        <!-- <div id="cleanup-output">
+            <div id="cleanup-container"></div>
+            <textarea id="clean-box" rows="5" cols="50" placeholder="Cleaned up text will appear here..."></textarea>
+        </div> -->
+
         <div id="cleanup-output">
             <div id="cleanup-container"></div>
             <textarea id="clean-box" rows="5" cols="50" placeholder="Cleaned up text will appear here..."></textarea>
+            <br>
+            <!-- <div class="pdf-button">
+                <button type="button" onclick="downloadPDF('clean-box')">Download Cleaned PDF</button>
+            </div> -->
+            <button onclick="downloadPDF('clean-box')">Download Cleaned PDF</button>
+
         </div>
-    </div>  
 
-    <div class="bottom-nav">
-        <nav>
-            <a href="/">Home</a>
-            <a href="/dictation">Dictation</a>
-            <a href="/Clean-Up">Clean-Up</a>
-        </nav>
-    </div>
+        <br>
+        <br>
 
-    <script src="/static/js/main.js"></script>
+        <div class="bottom-nav">
+            <nav>
+                <a href="/">Home</a>
+                <a href="/dictation">Dictation</a>
+                <a href="/Clean-Up">Clean-Up</a>
+            </nav>
+        </div>
+    
+        
+    </div> 
+    
+    <script>
+        window.tabAudioData = {};
+    </script>
+
+    <script src="/static/js/main.js?v=54"></script>
 </body>
